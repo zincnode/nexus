@@ -25,7 +25,7 @@ if lit_shell_env:
 config.test_format = lit.formats.ShTest(execute_external=not use_lit_shell)
 
 # suffixes: A list of file extensions to treat as test files.
-config.suffixes = [".mlir"]
+config.suffixes = [".mlir", ".py"]
 
 # test_source_root: The root path where tests are located.
 config.test_source_root = os.path.dirname(__file__)
@@ -62,6 +62,11 @@ tools = [
 ]
 
 llvm_config.add_tool_substitutions(tools, tool_dirs)
+
+# Python smoke tests for the bindings, when the package has been built.
+if config.nexus_python_packages_dir:
+    config.environment["PYTHONPATH"] = config.nexus_python_packages_dir
+    config.substitutions.append(("%PYTHON%", config.python_executable))
 
 # FileCheck -enable-var-scope is enabled by default in MLIR test
 # This option avoids to accidentally reuse variable across -LABEL match,

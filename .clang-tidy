@@ -1,4 +1,5 @@
 HeaderFilterRegex: ''
+ExcludeHeaderFilterRegex: '.*/build/compiler/include/.*'
 Checks: >
   -*,
   clang-diagnostic-*,

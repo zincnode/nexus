@@ -6,6 +6,12 @@ config.llvm_tools_dir = lit_config.substitute(path(r"@LLVM_TOOLS_DIR@"))
 config.nexus_src_root = path(r"@NEXUS_SOURCE_DIR@")
 config.nexus_obj_root = path(r"@NEXUS_BINARY_DIR@")
 config.enable_assertions = @ENABLE_ASSERTIONS@
+if "@NEXUS_ENABLE_PYTHON_BINDINGS@" == "ON":
+  config.python_executable = path(r"@Python3_EXECUTABLE@")
+  config.nexus_python_packages_dir = path(r"@NEXUS_PYTHON_PACKAGES_DIR@")
+else:
+  config.python_executable = ""
+  config.nexus_python_packages_dir = ""
 
 import lit.llvm
 lit.llvm.initialize(lit_config, config)

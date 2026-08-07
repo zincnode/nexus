@@ -25,6 +25,10 @@ set(NEXUS_TEST_DEPENDS
   nxs-opt
   )
 
+if(NEXUS_ENABLE_PYTHON_BINDINGS)
+  list(APPEND NEXUS_TEST_DEPENDS NexusPythonModules)
+endif()
+
 add_lit_testsuite(check-nexus "Running the nexus regression tests"
   ${CMAKE_CURRENT_BINARY_DIR}
   DEPENDS ${NEXUS_TEST_DEPENDS}

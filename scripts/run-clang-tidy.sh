@@ -59,7 +59,8 @@ REPORT="${REPORT_DIR}/clang-tidy-${timestamp}.log"
 mkdir -p "$REPORT_DIR"
 
 args=(-p "$BUILD_DIR" -j "$JOBS" -quiet -use-color=0 \
-  -header-filter 'compiler/(include|lib|tools)')
+  -header-filter 'compiler/(include|lib|tools)' \
+  -source-filter '.*/compiler/')
 
 if $export_fixes; then
   fixes_dir="${REPORT_DIR}/fixes-${timestamp}"
