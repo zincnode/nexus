@@ -1,11 +1,53 @@
-# 薄封装：把 vendoring 上游 MLIR dialect Python bindings 的样板压缩成一行调用。
-# 镜像 upstream `mlir/python/CMakeLists.txt`；新增/删除 dialect 时只需增删一行。
-# 依赖调用方已设置 NEXUS_MLIR_PYTHON_ROOT / NEXUS_MLIR_PYTHON_LIB_ROOT。
+# Configures the nexus Python bindings (vendored MLIR core API + nn dialect
+# bindings), keeping the top-level CMakeLists clean. Must be called after
+# find_package(MLIR) and before add_subdirectory(compiler).
+#
+# Note: this must be a macro, not a function. A function would create a new
+# variable scope, whereas this macro needs to write the ordinary variable
+# MLIR_SOURCE_DIR into the caller's directory scope for compiler/python to
+# inherit (NEXUS_MLIR_PYTHON_ROOT / NEXUS_MLIR_PYTHON_LIB_ROOT depend on it); a
+# macro creates no scope and is inlined directly, consistent with the
+# convention in cmake/NexusPolicies.cmake.
+
+macro(nexus_configure_python_bindings)
+  option(NEXUS_ENABLE_PYTHON_BINDINGS "Enable the nexus Python bindings" OFF)
+
+  if(NEXUS_ENABLE_PYTHON_BINDINGS)
+    # Locate the Python interpreter (whatever is active at configure time) and
+    # the nanobind package from it.
+    include(MLIRDetectPythonEnv)
+    mlir_configure_python_dev_packages()
+
+    # Provides declare_mlir_python_sources / add_mlir_python_modules & friends.
+    include(AddMLIRPython)
+
+    # Re-root the vendored MLIR Python bindings under the `nexus` package.
+    set(MLIR_PYTHON_PACKAGE_PREFIX "nexus" CACHE STRING
+        "Top-level python package for the vendored MLIR bindings")
+    set(MLIR_BINDINGS_PYTHON_NB_DOMAIN "nexus" CACHE STRING
+        "Nanobind domain for the nexus python bindings")
+
+    # Root of the MLIR source tree; used to vendor the MLIR Python sources.
+    list(GET MLIR_INCLUDE_DIRS 0 MLIR_SOURCE_INCLUDE_DIR)
+    get_filename_component(MLIR_SOURCE_DIR "${MLIR_SOURCE_INCLUDE_DIR}" DIRECTORY)
+
+    if(NOT NEXUS_PYTHON_PACKAGES_DIR)
+      set(NEXUS_PYTHON_PACKAGES_DIR "${CMAKE_BINARY_DIR}/python_packages/nexus"
+          CACHE PATH "Directory to assemble the nexus python package into")
+    endif()
+  endif()
+endmacro()
+
+# Thin wrapper: compresses the boilerplate of vendoring upstream MLIR dialect
+# Python bindings into a single call. Mirrors upstream
+# `mlir/python/CMakeLists.txt`; adding/removing a dialect is a one-line change.
+# Requires the caller to have set NEXUS_MLIR_PYTHON_ROOT /
+# NEXUS_MLIR_PYTHON_LIB_ROOT.
 
 # Wraps declare_mlir_dialect_python_bindings() for vendored upstream dialects.
 # Usage:
 #   nexus_vendored_dialect_binding(<DIALECT_NAME>
-#     TD_FILE <f>                              # 必填
+#     TD_FILE <f>                              # required
 #     [GEN_ENUM_BINDINGS]
 #     [GEN_ENUM_BINDINGS_TD_FILE <f>]
 #     [SOURCES <...>] [SOURCES_GLOB <...>])

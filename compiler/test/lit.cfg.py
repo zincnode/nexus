@@ -65,7 +65,10 @@ llvm_config.add_tool_substitutions(tools, tool_dirs)
 
 # Python smoke tests for the bindings, when the package has been built.
 if config.nexus_python_packages_dir:
-    config.environment["PYTHONPATH"] = config.nexus_python_packages_dir
+    python_paths = [config.nexus_python_packages_dir]
+    if config.torch_mlir_python_packages_dir:
+        python_paths.append(config.torch_mlir_python_packages_dir)
+    config.environment["PYTHONPATH"] = os.pathsep.join(python_paths)
     config.substitutions.append(("%PYTHON%", config.python_executable))
 
 # FileCheck -enable-var-scope is enabled by default in MLIR test

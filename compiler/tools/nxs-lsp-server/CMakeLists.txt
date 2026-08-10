@@ -5,4 +5,5 @@ target_link_libraries(nxs-lsp-server PRIVATE
   MLIRDialect
   MLIRRegisterAllDialects
   MLIRRegisterNexusDialects
+  TorchMLIRInitAll
 )

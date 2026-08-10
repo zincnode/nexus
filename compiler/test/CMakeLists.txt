@@ -6,6 +6,11 @@ set(NEXUS_BINARY_DIR ${PROJECT_BINARY_DIR})
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
+# Python package dirs for the lit site config: the nexus package and the
+# vendored torch_mlir frontend package (import root: .../python_packages/torch_mlir).
+set(NEXUS_LIT_PYTHON_PACKAGES_DIR "${NEXUS_PYTHON_PACKAGES_DIR}")
+set(TORCH_MLIR_LIT_PYTHON_PACKAGES_DIR "${TORCH_MLIR_PYTHON_PACKAGES_DIR}/torch_mlir")
+
 # `llvm-lit` lives in the (pre-built) LLVM/MLIR install, not in this build
 # tree. LLVMConfig.cmake does not export LLVM_RUNTIME_OUTPUT_INTDIR, so point
 # the lit launcher lookup at the LLVM tools dir explicitly.
@@ -28,6 +33,7 @@ set(NEXUS_TEST_DEPENDS
 if(NEXUS_ENABLE_PYTHON_BINDINGS)
   list(APPEND NEXUS_TEST_DEPENDS NexusPythonModules)
 endif()
+list(APPEND NEXUS_TEST_DEPENDS TorchMLIRPythonModules)
 
 add_lit_testsuite(check-nexus "Running the nexus regression tests"
   ${CMAKE_CURRENT_BINARY_DIR}

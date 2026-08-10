@@ -1,3 +1,7 @@
+# -Werror applies to nexus targets only; vendored third_party sources (e.g.
+# torch-mlir) are not forced under -Werror.
+add_compile_options(-Werror)
+
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tools)

@@ -7,11 +7,15 @@ config.nexus_src_root = path(r"@NEXUS_SOURCE_DIR@")
 config.nexus_obj_root = path(r"@NEXUS_BINARY_DIR@")
 config.enable_assertions = @ENABLE_ASSERTIONS@
 if "@NEXUS_ENABLE_PYTHON_BINDINGS@" == "ON":
-  config.python_executable = path(r"@Python3_EXECUTABLE@")
-  config.nexus_python_packages_dir = path(r"@NEXUS_PYTHON_PACKAGES_DIR@")
+  # Use the interpreter path literally: the `path()` helper realpaths symlinks,
+  # which would break a venv python (resolving to the base interpreter and
+  # dropping the venv site-packages, e.g. torch).
+  config.python_executable = r"@Python3_EXECUTABLE@"
+  config.nexus_python_packages_dir = path(r"@NEXUS_LIT_PYTHON_PACKAGES_DIR@")
 else:
   config.python_executable = ""
   config.nexus_python_packages_dir = ""
+config.torch_mlir_python_packages_dir = path(r"@TORCH_MLIR_LIT_PYTHON_PACKAGES_DIR@")
 
 import lit.llvm
 lit.llvm.initialize(lit_config, config)
