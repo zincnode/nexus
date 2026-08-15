@@ -36,6 +36,12 @@ declare_mlir_python_sources(NexusPythonSources.Core
     dialects/_ods_common.py
     dialects/ext.py
 )
+declare_mlir_python_sources(NexusPythonSources.Nexus
+  ADD_TO_PARENT NexusPythonSources.Core
+  ROOT_DIR "${NEXUS_PYTHON_ROOT_DIR}"
+  SOURCES
+    fx_utils.py
+)
 declare_mlir_python_sources(NexusPythonSources.Extras
   ADD_TO_PARENT NexusPythonSources.Core
   ROOT_DIR "${NEXUS_MLIR_PYTHON_ROOT}"
@@ -277,7 +283,10 @@ declare_mlir_python_extension(NexusPythonExtension.RegisterEverything
     MLIRCAPITransforms
     MLIRCAPIRegisterNexusEverything
     MLIRCAPIRegisterEverything
+    TorchMLIRCAPI
 )
+target_include_directories(NexusPythonExtension.RegisterEverything INTERFACE
+  "${CMAKE_SOURCE_DIR}/third_party/torch-mlir/include")
 
 ################################################################################
 # Common CAPI dependency DSO.

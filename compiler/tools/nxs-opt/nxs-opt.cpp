@@ -1,4 +1,5 @@
 #include "InitNexusDialects.h"
+#include "InitNexusPasses.h"
 
 #include "mlir/IR/DialectRegistry.h"
 #include "mlir/InitAllDialects.h"
@@ -10,6 +11,7 @@
 
 int main(int argc, char **argv) {
   mlir::registerAllPasses();
+  mlir::nxs::registerNexusPasses();
   mlir::torch::registerAllPasses();
 
   mlir::DialectRegistry registry;

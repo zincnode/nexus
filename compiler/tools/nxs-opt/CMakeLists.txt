@@ -7,5 +7,6 @@ target_link_libraries(nxs-opt PRIVATE
   MLIRRegisterAllExtensions
   MLIRRegisterAllPasses
   MLIRRegisterNexusDialects
+  MLIRRegisterNexusPasses
   TorchMLIRInitAll
 )

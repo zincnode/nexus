@@ -30,5 +30,5 @@ with Context() as ctx, Location.unknown():
         rhs = const([5.0, 6.0, 7.0, 8.0])
         nn.AddOp(tensor_type, lhs, rhs)
     # CHECK: arith.constant
-    # CHECK: "nn.add"
+    # CHECK: nn.add
     print(module)

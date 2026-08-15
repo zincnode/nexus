@@ -48,10 +48,24 @@ function(nexus_vendor_torch_mlir)
   if(COMMAND cmake_diagnostic)
     # CMake >= 4.4: unified diagnostics. CMD_AUTHOR/CMD_POLICY/CMD_DEPRECATED
     # are independent categories (author does not cover policy/deprecated).
-    block(SCOPE_FOR DIAGNOSTICS)
+    # Set CMP0218 NEW so the diagnostic state also applies to builtin
+    # deprecation messages (e.g. "OLD behavior for policy CMPXXXX will be
+    # removed") instead of them falling back to CMAKE_WARN_DEPRECATED.
+    if(POLICY CMP0218)
+      cmake_policy(SET CMP0218 NEW)
+    endif()
+    # torch-mlir/CMakeLists.txt calls cmake_minimum_required(VERSION 3.12),
+    # which resets CMP0218 to unset inside the subdirectory, so deprecation
+    # messages there ignore the diagnostic state above and instead use the
+    # legacy CMAKE_WARN_DEPRECATED/CMAKE_ERROR_DEPRECATED variables. Scope the
+    # variables to this block so the subtree sees OFF and the caller is
+    # restored automatically at endblock().
+    block(SCOPE_FOR DIAGNOSTICS VARIABLES)
       cmake_diagnostic(SET CMD_AUTHOR IGNORE)
       cmake_diagnostic(SET CMD_POLICY IGNORE)
       cmake_diagnostic(SET CMD_DEPRECATED IGNORE)
+      set(CMAKE_WARN_DEPRECATED OFF)
+      set(CMAKE_ERROR_DEPRECATED OFF)
       add_subdirectory(third_party/torch-mlir)
     endblock()
   else()

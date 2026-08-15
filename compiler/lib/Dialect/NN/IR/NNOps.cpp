@@ -1,6 +1,9 @@
 #include "Dialect/NN/IR/NNOps.h"
 #include "Dialect/NN/IR/NNOpsDialect.cpp.inc"
 
+using namespace mlir;
+using namespace mlir::nxs;
+
 #define GET_OP_CLASSES
 #include "Dialect/NN/IR/NNOps.cpp.inc"
 
