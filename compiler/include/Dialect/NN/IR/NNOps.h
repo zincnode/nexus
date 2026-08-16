@@ -13,6 +13,7 @@
 #include "mlir/Interfaces/SideEffectInterfaces.h"
 
 #include "Dialect/NN/IR/NNOpsDialect.h.inc"
+#include "Dialect/NN/IR/NNTraits.h"
 
 #define GET_OP_CLASSES
 #include "Dialect/NN/IR/NNOps.h.inc"

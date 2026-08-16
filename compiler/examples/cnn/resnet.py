@@ -1,3 +1,4 @@
+import argparse
 import io
 
 import nexus.ir as nir
@@ -15,6 +16,14 @@ NN_PIPELINE = (
 
 
 def main():
+    parser = argparse.ArgumentParser(description="ResNet50 example")
+    parser.add_argument(
+        "--save-nn-ir",
+        metavar="PATH",
+        help="save the lowered NN IR (textual MLIR) to PATH",
+    )
+    args = parser.parse_args()
+
     model = resnet50(weights=None).eval()
     module = export_and_import_for_backend(model, torch.randn(1, 3, 224, 224))
     print("resnet50 import OK")
@@ -29,6 +38,10 @@ def main():
         pm.run(lowered.operation)
         assert lowered.operation.verify()
         print("NN pipeline OK")
+        if args.save_nn_ir:
+            with open(args.save_nn_ir, "w") as f:
+                f.write(lowered.operation.get_asm())
+            print(f"NN IR saved to {args.save_nn_ir}")
 
 
 if __name__ == "__main__":

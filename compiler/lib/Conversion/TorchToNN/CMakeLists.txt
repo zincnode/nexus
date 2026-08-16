@@ -1,5 +1,14 @@
 add_mlir_conversion_library(NexusTorchToNN
   TorchToNN.cpp
+  Utils.cpp
+  Convolution.cpp
+  Elementwise.cpp
+  LinearAlgebra.cpp
+  Normalization.cpp
+  Pooling.cpp
+  Reduction.cpp
+  Resampling.cpp
+  ShapeManipulation.cpp
 
   DEPENDS
   NexusConversionPassIncGen

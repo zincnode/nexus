@@ -15,4 +15,20 @@ def NN_Dialect : Dialect {
 class NN_Op<string mnemonic, list<Trait> traits = []>
     : Op<NN_Dialect, mnemonic, traits>;
 
+// Semantic op traits, used as documentation-only markers to group ops into
+// categories. Backed by empty trait classes in `::mlir::nxs::OpTrait`.
+class NN_OpTrait<string name> : NativeOpTrait<""> {
+  let trait = name;
+  let cppNamespace = "::mlir::nxs::OpTrait";
+}
+
+def NN_Elementwise : NN_OpTrait<"Elementwise">;
+def NN_Reduction : NN_OpTrait<"Reduction">;
+def NN_LinearAlgebra : NN_OpTrait<"LinearAlgebra">;
+def NN_Convolution : NN_OpTrait<"Convolution">;
+def NN_Normalization : NN_OpTrait<"Normalization">;
+def NN_Pooling : NN_OpTrait<"Pooling">;
+def NN_Resampling : NN_OpTrait<"Resampling">;
+def NN_ShapeManipulation : NN_OpTrait<"ShapeManipulation">;
+
 #endif // DIALECT_NN_IR_NNBASE_TD

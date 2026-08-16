@@ -50,6 +50,11 @@ def main():
         help="materialize tensor-literal weights as inline dense attrs instead "
         "of dense_resource references",
     )
+    parser.add_argument(
+        "--save-nn-ir",
+        metavar="PATH",
+        help="save the lowered NN IR (textual MLIR) to PATH",
+    )
     args = parser.parse_args()
 
     convert = (
@@ -72,6 +77,10 @@ def main():
         pm.run(lowered.operation)
         assert lowered.operation.verify()
         print("NN pipeline OK")
+        if args.save_nn_ir:
+            with open(args.save_nn_ir, "w") as f:
+                f.write(lowered.operation.get_asm())
+            print(f"NN IR saved to {args.save_nn_ir}")
 
 
 if __name__ == "__main__":
